@@ -1,0 +1,47 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    app: CI_PROJECT_NAME
+    version: ENV_NAME
+  name: CI_PROJECT_NAME
+  namespace: ENV_NAME
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: CI_PROJECT_NAME
+      version: ENV_NAME
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubernetes.io/change-cause: "Deployed by gitlab-ci using FINAL_IMG"
+      labels:
+        app: CI_PROJECT_NAME
+        version: ENV_NAME
+    spec:
+      containers:
+      - name: CI_PROJECT_NAME
+        image: FINAL_IMG
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: APP_PORT
+        readinessProbe:
+          httpGet:
+            path: /dromatech/healthz
+            port: APP_PORT
+          initialDelaySeconds: 10
+          periodSeconds: 20
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /dromatech/healthz
+            port: APP_PORT
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+      imagePullSecrets:
+        - name: dockerlogin
+---

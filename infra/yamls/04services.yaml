@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: CI_PROJECT_NAME
+  name: CI_PROJECT_NAME
+  namespace: ENV_NAME 
+spec:
+  ports:
+  - name: http
+    port: APP_PORT
+    targetPort: APP_PORT
+  selector:
+    app: CI_PROJECT_NAME
+---

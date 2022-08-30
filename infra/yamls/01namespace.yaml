@@ -1,0 +1,7 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: ENV_NAME
+  labels:
+    name: ENV_NAME
+---
